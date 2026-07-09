@@ -1,0 +1,12 @@
+﻿<html><body>
+<script>
+fetch('script.js').then(r => r.text()).then(txt => {
+    try {
+        new Function(txt);
+        document.body.innerHTML = 'No syntax error in script.js';
+    } catch(e) {
+        document.body.innerHTML = 'Error: ' + e.message;
+    }
+});
+</script>
+</body></html>

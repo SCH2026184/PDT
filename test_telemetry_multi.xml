@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TelemetryData>
+    <AG_Release>
+        <TGT_Lat>-0.09018923</TGT_Lat>
+        <TGR_Long>-0.27166667</TGR_Long>
+        <True_Heading>0.78539816</True_Heading>
+        <Calculated_Mis_AL>3.0</Calculated_Mis_AL>
+        <Calculated_Mis_AC>-2.5</Calculated_Mis_AC>
+    </AG_Release>
+    <AG_Release>
+        <TGT_Lat>-0.09017778</TGT_Lat>
+        <TGR_Long>-0.27165556</TGR_Long>
+        <True_Heading>1.57079633</True_Heading>
+        <Calculated_Mis_AL>-4.0</Calculated_Mis_AL>
+        <Calculated_Mis_AC>5.0</Calculated_Mis_AC>
+    </AG_Release>
+    <AG_Release>
+        <TGT_Lat>-0.09020000</TGT_Lat>
+        <TGR_Long>-0.27167778</TGR_Long>
+        <True_Heading>3.14159265</True_Heading>
+        <Calculated_Mis_AL>1.0</Calculated_Mis_AL>
+        <Calculated_Mis_AC>1.5</Calculated_Mis_AC>
+    </AG_Release>
+</TelemetryData>
