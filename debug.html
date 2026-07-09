@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+    <input type="file" id="file" />
+    <pre id="output"></pre>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        document.getElementById('file').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = async function() {
+                const typedarray = new Uint8Array(this.result);
+                const pdf = await pdfjsLib.getDocument(typedarray).promise;
+                let fullText = "";
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    let lastY;
+                    for (let item of textContent.items) {
+                        if (lastY !== undefined && lastY !== item.transform[5]) fullText += "\n";
+                        fullText += item.str + " ";
+                        lastY = item.transform[5];
+                    }
+                    fullText += "\n";
+                }
+                const cleanText = fullText.replace(/[\n\r]/g, " ").replace(/\s+/g, " ");
+                document.getElementById('output').textContent = cleanText;
+            };
+            reader.readAsArrayBuffer(file);
+        });
+    </script>
+</body>
+</html>

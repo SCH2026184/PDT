@@ -1,0 +1,82 @@
+﻿              <!-- SHARED SECTION -->
+              <div class="group-container">
+                  <div class="group-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                      <div style="display: flex; align-items: center;">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00ff00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle; margin-right:6px;">
+                              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                          </svg>
+                          RESULTADO PILOTO
+                      </div>
+                      <div style="display: flex; gap: 6px;">
+                          <label for="telemetry-file" style="cursor: pointer; color: var(--background); display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 4px; background: var(--primary);" title="Upload Telemetria">
+                              <i class="fa-solid fa-floppy-disk"></i>
+                          </label>
+                          <input type="file" id="telemetry-file" accept=".xml" style="display: none;">
+                          <button id="go-to-employment-btn" style="background: var(--primary); border: none; cursor: pointer; color: var(--background); display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 4px;" title="Ir para o Emprego">
+                              <i class="fa-solid fa-location-crosshairs"></i>
+                          </button>
+                      </div>
+                  </div>
+                  
+                  <div class="form-group" id="telemetry-release-group" style="display: none;">
+                      <label for="telemetry-release-select">Selecione o Emprego no XML</label>
+                      <select id="telemetry-release-select" style="margin-bottom: 8px;">
+                          <!-- Populated dynamically -->
+                      </select>
+                      <div id="telemetry-visibility-panel" style="display: flex; flex-direction: column; gap: 4px; padding: 8px; background: rgba(0,0,0,0.2); border-radius: 6px; max-height: 120px; overflow-y: auto;">
+                          <!-- Checkboxes go here -->
+                      </div>
+                  </div>
+
+                  <!-- NOVO DESIGN COMPACTO -->
+                  <div class="form-row" style="margin-bottom: 6px; grid-template-columns: 1fr 2fr; gap: 6px;">
+                      <div class="form-group" id="designation-weapon-group" style="margin-bottom: 0;">
+                          <label for="designation-weapon" style="font-size: 0.7rem; margin-bottom: 2px;">Armamento</label>
+                          <input type="text" id="designation-weapon" readonly value="-" style="background: rgba(255, 255, 255, 0.05); color: #00d2ff; font-weight: bold; cursor: default; padding: 4px; font-size: 0.8rem; text-align: center;">
+                      </div>
+                      <div class="form-group" style="margin-bottom: 0;">
+                          <label for="designation-coords" style="font-size: 0.7rem; margin-bottom: 2px;">Coordenada (Designação)</label>
+                          <input type="text" id="designation-coords" placeholder="Coordenada..." style="padding: 4px; font-size: 0.8rem; text-align: center;">
+                      </div>
+                  </div>
+                  <div class="form-row" style="margin-bottom: 6px; grid-template-columns: 1fr 1fr; gap: 6px;">
+                      <div class="form-group" style="margin-bottom: 0;">
+                          <label for="lat-error" style="font-size: 0.7rem; margin-bottom: 2px;">Erro Lateral (ft)</label>
+                          <input type="number" id="lat-error" placeholder="0" value="0" style="padding: 4px; font-size: 0.8rem; text-align: center;">
+                      </div>
+                      <div class="form-group" style="margin-bottom: 0;">
+                          <label for="long-error" style="font-size: 0.7rem; margin-bottom: 2px;">Erro Longitudinal (ft)</label>
+                          <input type="number" id="long-error" placeholder="0" value="0" style="padding: 4px; font-size: 0.8rem; text-align: center;">
+                      </div>
+                  </div>
+                  <div class="form-row" style="margin-bottom: 6px; grid-template-columns: 1fr 1fr 1.5fr; gap: 6px;">
+                      <div class="form-group" style="margin-bottom: 0;">
+                          <label for="designation-qty" style="font-size: 0.7rem; margin-bottom: 2px;">Qtd</label>
+                          <input type="number" id="designation-qty" value="1" min="1" max="99" style="padding: 4px; font-size: 0.8rem; text-align: center;">
+                      </div>
+                      <div class="form-group" style="margin-bottom: 0;">
+                          <label for="designation-ripple" style="font-size: 0.7rem; margin-bottom: 2px;">Ripple (m)</label>
+                          <input type="number" id="designation-ripple" value="13" min="0" max="99" style="padding: 4px; font-size: 0.8rem; text-align: center;">
+                      </div>
+                      <div class="form-group" style="margin-bottom: 0;">
+                          <label for="designation-heading" style="font-size: 0.7rem; margin-bottom: 2px;">Eixo (°)</label>
+                          <input type="text" id="designation-heading" value="PLANEJADO" style="text-transform: uppercase; padding: 4px; font-size: 0.8rem; text-align: center;">
+                      </div>
+                  </div>
+
+                  <div class="form-row">
+                      <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                          <input type="checkbox" id="show-calculated" style="width: 20px;">
+                          <label for="show-calculated" style="margin-bottom: 0;">Emprego Calculado (Ideal)</label>
+                      </div>
+                      <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                          <input type="checkbox" id="show-effected" style="width: 20px;">
+                          <label for="show-effected" style="margin-bottom: 0;">Emprego Efetuado (Real)</label>
+                      </div>
+                  </div>
+
+                  <button id="calculate-btn" class="action-btn" style="width: 100%; margin-top: 10px;">
+                      <i class="fa-solid fa-calculator"></i> SALVAR RESULTADO PILOTO
+                  </button>
+              </div> <!-- Fim SHARED SECTION -->
+            </div> <!-- Fecha attack-tab -->

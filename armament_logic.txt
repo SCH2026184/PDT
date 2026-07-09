@@ -1,0 +1,89 @@
+﻿    // --- ARMAMENT PANEL LOGIC ---
+    let armamentState = {
+        ac1: { pilot: '', st1: 'empty', st2: 'empty', st3: 'empty', st4: 'empty', st5: 'empty' },
+        ac2: { pilot: '', st1: 'empty', st2: 'empty', st3: 'empty', st4: 'empty', st5: 'empty' }
+    };
+    
+    const armamentModal = document.getElementById('armament-modal');
+    const configBtn = document.getElementById('config-armament-btn');
+    const closeBtn = document.getElementById('close-armament-modal');
+    const saveBtn = document.getElementById('save-armament-config-btn');
+    
+    if (configBtn && armamentModal) {
+        configBtn.addEventListener('click', () => {
+            armamentModal.style.display = 'flex';
+        });
+        closeBtn.addEventListener('click', () => {
+            armamentModal.style.display = 'none';
+        });
+        
+        saveBtn.addEventListener('click', () => {
+            // Save AC 1
+            armamentState.ac1.pilot = document.getElementById('config-a29-1-pilot').value.toUpperCase();
+            for (let i = 1; i <= 5; i++) {
+                armamentState.ac1['st'+i] = document.getElementById('config-a29-1-st'+i).value;
+            }
+            // Save AC 2
+            armamentState.ac2.pilot = document.getElementById('config-a29-2-pilot').value.toUpperCase();
+            for (let i = 1; i <= 5; i++) {
+                armamentState.ac2['st'+i] = document.getElementById('config-a29-2-st'+i).value;
+            }
+            
+            updateArmamentUI();
+            armamentModal.style.display = 'none';
+        });
+    }
+
+    function updateArmamentUI() {
+        const weaponColors = {
+            'BAFG-230': '#ff0000',
+            'BAFG-120': '#ff6600',
+            'LM70/7': '#00ff00',
+            'LM70/19': '#00cc00',
+            'TANK': '#ff00ff',
+            'empty': 'transparent'
+        };
+
+        ['ac1', 'ac2'].forEach((ac, idx) => {
+            const num = idx + 1;
+            const pilotInput = document.getElementById('a29-' + num + '-pilot');
+            if (pilotInput) pilotInput.value = armamentState[ac].pilot;
+            
+            let hasAny = false;
+            for (let i = 1; i <= 5; i++) {
+                const st = armamentState[ac]['st'+i];
+                const stEl = document.getElementById('a29-' + num + '-st' + i);
+                if (stEl) {
+                    stEl.style.background = weaponColors[st] || 'transparent';
+                    stEl.style.boxShadow = st !== 'empty' ? '0 0 5px ' + (weaponColors[st] || '#fff') : 'none';
+                    stEl.style.display = st !== 'empty' ? 'block' : 'none';
+                    if (st !== 'empty') hasAny = true;
+                }
+            }
+            
+            const container = document.getElementById('a29-' + num + '-ui');
+            if (container) {
+                container.style.opacity = (armamentState[ac].pilot || hasAny) ? '1' : '0.3';
+            }
+        });
+    }
+
+    window.decrementArmament = function(weaponUsed, qty) {
+        if (!weaponUsed || qty <= 0) return;
+        let remainingToDrop = qty;
+        
+        // Find matching weapon on stations starting from outer stations (1 and 5, then 2 and 4, then 3)
+        const dropOrder = [1, 5, 2, 4, 3];
+        
+        ['ac1', 'ac2'].forEach(ac => {
+            dropOrder.forEach(stNum => {
+                const stKey = 'st' + stNum;
+                if (remainingToDrop > 0 && armamentState[ac][stKey] === weaponUsed) {
+                    armamentState[ac][stKey] = 'empty';
+                    remainingToDrop--;
+                }
+            });
+        });
+        updateArmamentUI();
+    };
+

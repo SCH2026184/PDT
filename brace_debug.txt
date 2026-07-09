@@ -1,0 +1,274 @@
+Line 2662 [1, 0] Diff 2:     function updateTacticalList(mode) {
+Line 2663 [0, 0] Diff 2:         let container;
+Line 2664 [0, 0] Diff 2:         if (mode === 'waypoints') container = document.getElementById('waypoints-list');
+Line 2665 [0, 0] Diff 2:         if (mode === 'targets') container = document.getElementById('targets-list');
+Line 2666 [0, 0] Diff 2:         if (mode === 'artillery') container = document.getElementById('artillery-list');
+Line 2667 [0, 0] Diff 2:         if (mode === 'navigation') container = document.getElementById('navigation-list');
+Line 2668 [0, 0] Diff 2:                 if (mode === 'friendly') container = document.getElementById('friendly-list');
+Line 2669 [0, 0] Diff 2:         if (mode === 'threats') container = document.getElementById('threats-list');
+Line 2670 [0, 0] Diff 2:         if (mode === 'scenario') container = document.getElementById('scenario-list');
+Line 2671 [0, 0] Diff 2:         
+Line 2672 [0, 0] Diff 2:         if (!container) return;
+Line 2673 [0, 0] Diff 2:         container.innerHTML = '';
+Line 2674 [0, 0] Diff 2:         
+Line 2675 [1, 0] Diff 3:         tacticalPoints[mode].forEach(pt => {
+Line 2676 [0, 0] Diff 3:             const item = document.createElement('div');
+Line 2677 [0, 0] Diff 3:             item.style.cssText = 'display:flex; align-items:center; gap:10px; margin-bottom:8px; padding:8px 12px; border-radius:8px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);';
+Line 2678 [0, 0] Diff 3:             
+Line 2679 [1, 0] Diff 4:             item.addEventListener('click', (e) => {
+Line 2680 [0, 0] Diff 4:                 if (e.target.closest('button') || e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+Line 2681 [0, 0] Diff 4:                 selectTacticalPoint(pt, item);
+Line 2682 [0, 1] Diff 3:             });
+Line 2683 [0, 0] Diff 3: 
+Line 2684 [1, 0] Diff 4:             if (typeof selectedTacticalPoint !== 'undefined' && selectedTacticalPoint && selectedTacticalPoint.pt.id === pt.id) {
+Line 2685 [0, 0] Diff 4:                 selectedTacticalPoint.element = item;
+Line 2686 [0, 0] Diff 4:                 item.classList.add('selected-tactical-item');
+Line 2687 [0, 0] Diff 4:                 if (pt.marker && pt.marker._icon) L.DomUtil.addClass(pt.marker._icon, 'selected-marker');
+Line 2688 [0, 1] Diff 3:             }
+Line 2689 [0, 0] Diff 3: 
+Line 2690 [0, 0] Diff 3:             const info = document.createElement('div');
+Line 2691 [0, 0] Diff 3:             info.style.cssText = 'flex:1; display:flex; flex-direction:column; gap:2px;';
+Line 2692 [0, 0] Diff 3:             
+Line 2693 [0, 0] Diff 3:             const nameEl = document.createElement('span');
+Line 2694 [0, 0] Diff 3:             nameEl.style.cssText = 'font-size:0.85rem; font-weight:bold; color:var(--primary); outline:none; cursor:text;';
+Line 2695 [0, 0] Diff 3:             nameEl.contentEditable = true;
+Line 2696 [0, 0] Diff 3:             nameEl.textContent = pt.name;
+Line 2697 [1, 0] Diff 4:             nameEl.addEventListener('blur', (e) => {
+Line 2698 [0, 0] Diff 4:                 pt.name = e.target.textContent;
+Line 2699 [1, 0] Diff 5:                 if (pt.marker) {
+Line 2700 [0, 0] Diff 5:                     pt.marker.bindTooltip(pt.name);
+Line 2701 [0, 1] Diff 4:                 }
+Line 2702 [0, 1] Diff 3:             });
+Line 2703 [1, 0] Diff 4:         pt.marker.on('click', (e) => {
+Line 2704 [0, 0] Diff 4:             L.DomEvent.stopPropagation(e);
+Line 2705 [0, 0] Diff 4:             let itemEl = null;
+Line 2706 [0, 0] Diff 4:             const lists = ['waypoints-list', 'targets-list', 'artillery-list', 'navigation-list', 'friendly-list', 'threats-list', 'scenario-list'];
+Line 2707 [1, 0] Diff 5:             for (let listId of lists) {
+Line 2708 [0, 0] Diff 5:                 const listContainer = document.getElementById(listId);
+Line 2709 [1, 0] Diff 6:                 if (listContainer) {
+Line 2710 [0, 0] Diff 6:                     const items = Array.from(listContainer.children);
+Line 2711 [0, 0] Diff 6:                     const idx = tacticalPoints[listId.split('-')[0]]?.findIndex(x => x.id === pt.id);
+Line 2712 [0, 0] Diff 6:                     if (idx !== -1 && idx !== undefined && items[idx]) itemEl = items[idx];
+Line 2713 [0, 1] Diff 5:                 }
+Line 2714 [0, 1] Diff 4:             }
+Line 2715 [1, 0] Diff 5:             if (typeof selectTacticalPoint === 'function' && itemEl) {
+Line 2716 [0, 0] Diff 5:                 selectTacticalPoint(pt, itemEl);
+Line 2717 [1, 1] Diff 5:                 itemEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+Line 2718 [0, 1] Diff 4:             }
+Line 2719 [0, 1] Diff 3:         });
+Line 2720 [0, 0] Diff 3:                     if (showLegends) pt.marker.openTooltip();
+Line 2721 [0, 1] Diff 2:                 }
+Line 2722 [0, 0] Diff 2:             const coordsEl = document.createElement('span');
+Line 2723 [0, 0] Diff 2:             coordsEl.style.cssText = 'font-size:0.65rem; color:var(--text-dim);';
+Line 2724 [0, 0] Diff 2:             const casTabActive = document.querySelector('.tab[data-target="cas-tab"]') && document.querySelector('.tab[data-target="cas-tab"]').classList.contains('active');
+Line 2725 [0, 0] Diff 2:             let coordsFormat = casTabActive ? 'MGRS' : document.getElementById('coord-format').value;
+Line 2726 [0, 0] Diff 2:             coordsEl.textContent = formatCoords(pt.latlng.lat, pt.latlng.lng, coordsFormat);
+Line 2727 [0, 0] Diff 2:             
+Line 2728 [0, 0] Diff 2:             info.appendChild(nameEl);
+Line 2729 [0, 0] Diff 2:             info.appendChild(coordsEl);
+Line 2730 [0, 0] Diff 2:             
+Line 2731 [0, 0] Diff 2:             // Add mode specific inputs
+Line 2732 [1, 0] Diff 3:             if (mode === 'artillery') {
+Line 2733 [0, 0] Diff 3:                 const artInfo = document.createElement('div');
+Line 2734 [0, 0] Diff 3:                 artInfo.style.cssText = 'display:flex; flex-direction:column; gap:4px; margin-top:4px;';
+Line 2735 [0, 0] Diff 3:                 
+Line 2736 [0, 0] Diff 3:                 // Row 1: GTL, Range, Unit, Max Ord
+Line 2737 [0, 0] Diff 3:                 const row1 = document.createElement('div');
+Line 2738 [0, 0] Diff 3:                 row1.style.cssText = 'display:flex; gap:6px; align-items:center;';
+Line 2739 [0, 0] Diff 3:                 
+Line 2740 [0, 0] Diff 3:                 const gtlInput = document.createElement('input');
+Line 2741 [0, 0] Diff 3:                 gtlInput.type = 'number';
+Line 2742 [0, 0] Diff 3:                 gtlInput.placeholder = 'GTL (Mag)';
+Line 2743 [0, 0] Diff 3:                 gtlInput.title = 'Gun Target Line (Magnético)';
+Line 2744 [0, 0] Diff 3:                 gtlInput.value = pt.gtl || '';
+Line 2745 [0, 0] Diff 3:                 gtlInput.style.cssText = 'width:60px; font-size:0.7rem; padding:2px; background:rgba(0,0,0,0.5); color:white; border:1px solid var(--primary); border-radius:4px;';
+Line 2746 [0, 0] Diff 3:                 
+Line 2747 [0, 0] Diff 3:                 const rangeInput = document.createElement('input');
+Line 2748 [0, 0] Diff 3:                 rangeInput.type = 'number';
+Line 2749 [0, 0] Diff 3:                 rangeInput.placeholder = 'Range';
+Line 2750 [0, 0] Diff 3:                 rangeInput.value = pt.range || '';
+Line 2751 [0, 0] Diff 3:                 rangeInput.style.cssText = 'width:60px; font-size:0.7rem; padding:2px; background:rgba(0,0,0,0.5); color:white; border:1px solid var(--primary); border-radius:4px;';
+Line 2752 [0, 0] Diff 3:                 
+Line 2753 [0, 0] Diff 3:                 const unitSelect = document.createElement('select');
+Line 2754 [0, 0] Diff 3:                 unitSelect.style.cssText = 'font-size:0.7rem; padding:2px; background:rgba(0,0,0,0.5); color:white; border:1px solid var(--primary); border-radius:4px;';
+Line 2755 [2, 2] Diff 3:                 unitSelect.innerHTML = `<option value="m" ${pt.rangeUnit==='m'?'selected':''}>m</option><option value="nm" ${pt.rangeUnit==='nm'?'selected':''}>nm</option>`;
+Line 2756 [0, 0] Diff 3:                 
+Line 2757 [0, 0] Diff 3:                 const maxOrdInput = document.createElement('input');
+Line 2758 [0, 0] Diff 3:                 maxOrdInput.type = 'number';
+Line 2759 [0, 0] Diff 3:                 maxOrdInput.placeholder = 'MaxOrd(ft)';
+Line 2760 [0, 0] Diff 3:                 maxOrdInput.title = 'Max Ordinate (ft)';
+Line 2761 [0, 0] Diff 3:                 maxOrdInput.value = pt.maxOrd || '';
+Line 2762 [0, 0] Diff 3:                 maxOrdInput.style.cssText = 'width:70px; font-size:0.7rem; padding:2px; background:rgba(0,0,0,0.5); color:white; border:1px solid var(--primary); border-radius:4px;';
+Line 2763 [0, 0] Diff 3:                 
+Line 2764 [0, 0] Diff 3:                 row1.appendChild(gtlInput);
+Line 2765 [0, 0] Diff 3:                 row1.appendChild(rangeInput);
+Line 2766 [0, 0] Diff 3:                 row1.appendChild(unitSelect);
+Line 2767 [0, 0] Diff 3:                 row1.appendChild(maxOrdInput);
+Line 2768 [0, 0] Diff 3:                 
+Line 2769 [0, 0] Diff 3:                 // Row 2: Time Window
+Line 2770 [0, 0] Diff 3:                 const row2 = document.createElement('div');
+Line 2771 [0, 0] Diff 3:                 row2.style.cssText = 'display:flex; gap:6px; align-items:center;';
+Line 2772 [0, 0] Diff 3:                 
+Line 2773 [0, 0] Diff 3:                 const timeStartInput = document.createElement('input');
+Line 2774 [0, 0] Diff 3:                 timeStartInput.type = 'time';
+Line 2775 [0, 0] Diff 3:                 timeStartInput.step = '1';
+Line 2776 [0, 0] Diff 3:                 timeStartInput.title = 'TOT Início (Ativo)';
+Line 2777 [0, 0] Diff 3:                 timeStartInput.value = pt.timeStart || '';
+Line 2778 [0, 0] Diff 3:                 timeStartInput.style.cssText = 'width:95px; font-size:0.7rem; padding:2px; background:rgba(0,0,0,0.5); color:white; border:1px solid var(--primary); border-radius:4px;';
+Line 2779 [0, 0] Diff 3:                 
+Line 2780 [0, 0] Diff 3:                 const timeEndInput = document.createElement('input');
+Line 2781 [0, 0] Diff 3:                 timeEndInput.type = 'time';
+Line 2782 [0, 0] Diff 3:                 timeEndInput.step = '1';
+Line 2783 [0, 0] Diff 3:                 timeEndInput.title = 'TOT Fim (Inativo)';
+Line 2784 [0, 0] Diff 3:                 timeEndInput.value = pt.timeEnd || '';
+Line 2785 [0, 0] Diff 3:                 timeEndInput.style.cssText = 'width:95px; font-size:0.7rem; padding:2px; background:rgba(0,0,0,0.5); color:white; border:1px solid var(--primary); border-radius:4px;';
+Line 2786 [0, 0] Diff 3:                 
+Line 2787 [0, 0] Diff 3:                 row2.innerHTML = '<span style="font-size:0.7rem; color:var(--text-dim);">TOT:</span>';
+Line 2788 [0, 0] Diff 3:                 row2.appendChild(timeStartInput);
+Line 2789 [0, 0] Diff 3:                 const dash = document.createElement('span'); dash.style.cssText = 'font-size:0.7rem; color:var(--text-dim);'; dash.textContent = '-'; row2.appendChild(dash);
+Line 2790 [0, 0] Diff 3:                 row2.appendChild(timeEndInput);
+Line 2791 [0, 0] Diff 3:                 
+Line 2792 [1, 0] Diff 4:                 const updateArtillery = () => {
+Line 2793 [0, 0] Diff 4:                     pt.gtl = parseFloat(gtlInput.value);
+Line 2794 [0, 0] Diff 4:                     pt.range = parseFloat(rangeInput.value);
+Line 2795 [0, 0] Diff 4:                     pt.rangeUnit = unitSelect.value;
+Line 2796 [0, 0] Diff 4:                     pt.maxOrd = parseFloat(maxOrdInput.value);
+Line 2797 [0, 0] Diff 4:                     pt.timeStart = timeStartInput.value;
+Line 2798 [0, 0] Diff 4:                     pt.timeEnd = timeEndInput.value;
+Line 2799 [0, 0] Diff 4:                     drawArtilleryImpact(pt);
+Line 2800 [0, 1] Diff 3:                 };
+Line 2801 [0, 0] Diff 3:                 gtlInput.addEventListener('input', updateArtillery);
+Line 2802 [0, 0] Diff 3:                 rangeInput.addEventListener('input', updateArtillery);
+Line 2803 [0, 0] Diff 3:                 unitSelect.addEventListener('change', updateArtillery);
+Line 2804 [0, 0] Diff 3:                 maxOrdInput.addEventListener('input', updateArtillery);
+Line 2805 [0, 0] Diff 3:                 timeStartInput.addEventListener('change', updateArtillery);
+Line 2806 [0, 0] Diff 3:                 timeEndInput.addEventListener('change', updateArtillery);
+Line 2807 [0, 0] Diff 3:                 
+Line 2808 [0, 0] Diff 3:                 artInfo.appendChild(row1);
+Line 2809 [0, 0] Diff 3:                 artInfo.appendChild(row2);
+Line 2810 [0, 0] Diff 3:                 info.appendChild(artInfo);
+Line 2811 [0, 1] Diff 2:             }
+Line 2812 [0, 0] Diff 2:             
+Line 2813 [1, 0] Diff 3:             if (mode === 'friendly') {
+Line 2814 [0, 0] Diff 3:                 const weaponsGroup = document.createElement('div');
+Line 2815 [0, 0] Diff 3:                 weaponsGroup.style.cssText = 'display:flex; gap:10px; margin-top:6px;';
+Line 2816 [0, 0] Diff 3:                 
+Line 2817 [1, 0] Diff 4:                 ['bomb', 'rocket', 'bullets'].forEach(w => {
+Line 2818 [0, 0] Diff 4:                     const lbl = document.createElement('label');
+Line 2819 [0, 0] Diff 4:                     lbl.style.cssText = 'display:flex; align-items:center; gap:4px; cursor:pointer; font-size:0.7rem; color:var(--text-dim);';
+Line 2820 [0, 0] Diff 4:                     const chk = document.createElement('input');
+Line 2821 [0, 0] Diff 4:                     chk.type = 'checkbox';
+Line 2822 [0, 0] Diff 4:                     chk.className = 'friendly-weapon-check';
+Line 2823 [0, 0] Diff 4:                     chk.dataset.weapon = w;
+Line 2824 [0, 0] Diff 4:                     chk.dataset.id = pt.id;
+Line 2825 [0, 0] Diff 4:                     chk.checked = pt[w + 'Checked'] || false;
+Line 2826 [0, 0] Diff 4:                     
+Line 2827 [0, 0] Diff 4:                     let icon = '';
+Line 2828 [0, 0] Diff 4:                     if(w === 'bomb') icon = '<i class="fa-solid fa-bomb"></i>';
+Line 2829 [0, 0] Diff 4:                     if(w === 'rocket') icon = '<i class="fa-solid fa-rocket"></i>';
+Line 2830 [0, 0] Diff 4:                     if(w === 'bullets') icon = '<i class="fa-solid fa-meteor"></i>';
+Line 2831 [0, 0] Diff 4:                     
+Line 2832 [0, 0] Diff 4:                     lbl.innerHTML = icon;
+Line 2833 [0, 0] Diff 4:                     lbl.prepend(chk);
+Line 2834 [0, 0] Diff 4:                     weaponsGroup.appendChild(lbl);
+Line 2835 [0, 0] Diff 4:                     
+Line 2836 [1, 0] Diff 5:                     chk.addEventListener('change', (e) => {
+Line 2837 [0, 0] Diff 5:                         const isChecked = e.target.checked;
+Line 2838 [0, 0] Diff 5:                         const show = document.getElementById('show-friendly-list').checked;
+Line 2839 [1, 0] Diff 6:                         if (w === 'bomb') {
+Line 2840 [0, 0] Diff 6:                             pt.bombChecked = isChecked;
+Line 2841 [1, 1] Diff 6:                             if (pt.bombCircle) { map.removeLayer(pt.bombCircle); delete pt.bombCircle; }
+Line 2842 [1, 0] Diff 7:                             if (isChecked) {
+Line 2843 [1, 1] Diff 7:                                 pt.bombCircle = L.circle(pt.latlng, { radius: 310, color: 'blue', dashArray: '5, 5', fill: false, weight: 2 });
+Line 2844 [0, 0] Diff 7:                                 if (show) pt.bombCircle.addTo(map);
+Line 2845 [0, 1] Diff 6:                             }
+Line 2846 [0, 1] Diff 5:                         }
+Line 2847 [1, 0] Diff 6:                         if (w === 'rocket') {
+Line 2848 [0, 0] Diff 6:                             pt.rocketChecked = isChecked;
+Line 2849 [1, 1] Diff 6:                             if (pt.rocketCircle) { map.removeLayer(pt.rocketCircle); delete pt.rocketCircle; }
+Line 2850 [1, 0] Diff 7:                             if (isChecked) {
+Line 2851 [1, 1] Diff 7:                                 pt.rocketCircle = L.circle(pt.latlng, { radius: 300, color: 'blue', dashArray: '5, 5', fill: false, weight: 2 });
+Line 2852 [0, 0] Diff 7:                                 if (show) pt.rocketCircle.addTo(map);
+Line 2853 [0, 1] Diff 6:                             }
+Line 2854 [0, 1] Diff 5:                         }
+Line 2855 [1, 0] Diff 6:                         if (w === 'bullets') {
+Line 2856 [0, 0] Diff 6:                             pt.bulletsChecked = isChecked;
+Line 2857 [1, 1] Diff 6:                             if (pt.bulletsCircle) { map.removeLayer(pt.bulletsCircle); delete pt.bulletsCircle; }
+Line 2858 [1, 0] Diff 7:                             if (isChecked) {
+Line 2859 [1, 1] Diff 7:                                 pt.bulletsCircle = L.circle(pt.latlng, { radius: 100, color: 'blue', dashArray: '5, 5', fill: false, weight: 2 });
+Line 2860 [0, 0] Diff 7:                                 if (show) pt.bulletsCircle.addTo(map);
+Line 2861 [0, 1] Diff 6:                             }
+Line 2862 [0, 1] Diff 5:                         }
+Line 2863 [0, 1] Diff 4:                     });
+Line 2864 [0, 1] Diff 3:                 });
+Line 2865 [0, 0] Diff 3:                 info.appendChild(weaponsGroup);
+Line 2866 [0, 1] Diff 2:             }
+Line 2867 [0, 0] Diff 2:             
+Line 2868 [1, 0] Diff 3:             if (mode === 'threats') {
+Line 2869 [0, 0] Diff 3:                 const threatInfo = document.createElement('div');
+Line 2870 [0, 0] Diff 3:                 threatInfo.style.cssText = 'display:flex; align-items:center; gap:6px; margin-top:4px;';
+Line 2871 [0, 0] Diff 3:                 const radInput = document.createElement('input');
+Line 2872 [0, 0] Diff 3:                 radInput.type = 'number';
+Line 2873 [0, 0] Diff 3:                 radInput.step = '0.1';
+Line 2874 [0, 0] Diff 3:                 radInput.value = pt.radiusNM || 2.0;
+Line 2875 [0, 0] Diff 3:                 radInput.style.cssText = 'width:50px; font-size:0.7rem; padding:2px; background:rgba(0,0,0,0.5); color:white; border:1px solid red; border-radius:4px;';
+Line 2876 [0, 0] Diff 3:                 const radLabel = document.createElement('span');
+Line 2877 [0, 0] Diff 3:                 radLabel.textContent = 'NM';
+Line 2878 [0, 0] Diff 3:                 radLabel.style.cssText = 'font-size:0.7rem; color:red;';
+Line 2879 [0, 0] Diff 3:                 
+Line 2880 [1, 0] Diff 4:                 radInput.addEventListener('input', (e) => {
+Line 2881 [0, 0] Diff 4:                     pt.radiusNM = parseFloat(e.target.value) || 2.0;
+Line 2882 [1, 0] Diff 5:                     if (pt.circle) {
+Line 2883 [0, 0] Diff 5:                         pt.circle.setRadius(pt.radiusNM * 1852);
+Line 2884 [0, 1] Diff 4:                     }
+Line 2885 [0, 1] Diff 3:                 });
+Line 2886 [0, 0] Diff 3:                 threatInfo.appendChild(radInput);
+Line 2887 [0, 0] Diff 3:                 threatInfo.appendChild(radLabel);
+Line 2888 [0, 0] Diff 3:                 info.appendChild(threatInfo);
+Line 2889 [0, 1] Diff 2:             }
+Line 2890 [0, 0] Diff 2:             
+Line 2891 [0, 0] Diff 2:             const actions = document.createElement('div');
+Line 2892 [0, 0] Diff 2:             actions.style.cssText = 'display:flex; gap:6px; align-items:center;';
+Line 2893 [0, 0] Diff 2:             
+Line 2894 [1, 0] Diff 3:             if (mode === 'targets') {
+Line 2895 [0, 0] Diff 3:                 const nineLBtn = document.createElement('button');
+Line 2896 [0, 0] Diff 3:                 nineLBtn.textContent = '9L';
+Line 2897 [0, 0] Diff 3:                 nineLBtn.title = '9-Line';
+Line 2898 [0, 0] Diff 3:                 nineLBtn.style.cssText = 'background:rgba(0, 210, 255, 0.1); border:1px solid var(--primary); color:var(--primary); cursor:pointer; padding:4px 6px; border-radius:4px; font-size:0.7rem; font-weight:bold; letter-spacing:1px;';
+Line 2899 [1, 0] Diff 4:                 nineLBtn.addEventListener('click', (e) => {
+Line 2900 [0, 0] Diff 4:                     e.stopPropagation();
+Line 2901 [0, 0] Diff 4:                     openNineLineModal(pt);
+Line 2902 [0, 1] Diff 3:                 });
+Line 2903 [0, 0] Diff 3:                 actions.appendChild(nineLBtn);
+Line 2904 [0, 1] Diff 2:             }
+Line 2905 [0, 0] Diff 2:             
+Line 2906 [0, 0] Diff 2:             const gotoBtn = document.createElement('button');
+Line 2907 [0, 0] Diff 2:             gotoBtn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i>';
+Line 2908 [0, 0] Diff 2:             gotoBtn.style.cssText = 'background:rgba(0, 210, 255, 0.1); border:1px solid var(--primary); color:var(--primary); cursor:pointer; padding:4px 6px; border-radius:4px; font-size:0.7rem;';
+Line 2909 [1, 1] Diff 2:             gotoBtn.addEventListener('click', () => map.setView(pt.latlng, 15, {animate: true}));
+Line 2910 [0, 0] Diff 2:             
+Line 2911 [0, 0] Diff 2:             const delBtn = document.createElement('button');
+Line 2912 [0, 0] Diff 2:             delBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+Line 2913 [0, 0] Diff 2:             delBtn.style.cssText = 'background:rgba(255, 0, 0, 0.1); border:1px solid red; color:red; cursor:pointer; padding:4px 6px; border-radius:4px; font-size:0.7rem;';
+Line 2914 [1, 0] Diff 3:             delBtn.addEventListener('click', () => {
+Line 2915 [0, 0] Diff 3:                 if (pt.marker) map.removeLayer(pt.marker);
+Line 2916 [0, 0] Diff 3:                 if (pt.circle) map.removeLayer(pt.circle);
+Line 2917 [0, 0] Diff 3:                 if (pt.impactLine) map.removeLayer(pt.impactLine);
+Line 2918 [0, 0] Diff 3:                 if (pt.impactMarker) map.removeLayer(pt.impactMarker);
+Line 2919 [0, 0] Diff 3:                 if (pt.bombCircle) map.removeLayer(pt.bombCircle);
+Line 2920 [0, 0] Diff 3:                 if (pt.rocketCircle) map.removeLayer(pt.rocketCircle);
+Line 2921 [0, 0] Diff 3:                 if (pt.bulletsCircle) map.removeLayer(pt.bulletsCircle);
+Line 2922 [0, 0] Diff 3:                 const idx = tacticalPoints[mode].findIndex(x => x.id === pt.id);
+Line 2923 [0, 0] Diff 3:                 if (idx > -1) tacticalPoints[mode].splice(idx, 1);
+Line 2924 [0, 0] Diff 3:                 updateTacticalList(mode);
+Line 2925 [0, 1] Diff 2:             });
+Line 2926 [0, 0] Diff 2:             
+Line 2927 [0, 0] Diff 2:             actions.appendChild(gotoBtn);
+Line 2928 [0, 0] Diff 2:             actions.appendChild(delBtn);
+Line 2929 [0, 0] Diff 2:             
+Line 2930 [0, 0] Diff 2:             item.appendChild(info);
+Line 2931 [0, 0] Diff 2:             item.appendChild(actions);
+Line 2932 [0, 0] Diff 2:             container.appendChild(item);
+Line 2933 [0, 1] Diff 1:         });
+Line 2934 [0, 1] Diff 0:     }
+Line 2935 [0, 0] Diff 0: 
